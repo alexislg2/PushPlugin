@@ -9,6 +9,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -90,17 +93,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		
-		int defaults = Notification.DEFAULT_ALL;
-
-		if (extras.getString("defaults") != null) {
-			try {
-				defaults = Integer.parseInt(extras.getString("defaults"));
-			} catch (NumberFormatException e) {}
-		}
-		
 		NotificationCompat.Builder mBuilder =
 			new NotificationCompat.Builder(context)
-				.setDefaults(defaults)
 				.setSmallIcon(context.getApplicationInfo().icon)
 				.setWhen(System.currentTimeMillis())
 				.setContentTitle(extras.getString("title"))
@@ -119,6 +113,29 @@ public class GCMIntentService extends GCMBaseIntentService {
 		if (msgcnt != null) {
 			mBuilder.setNumber(Integer.parseInt(msgcnt));
 		}
+
+		String soundName = extras.getString("sound");
+		if (soundName != null) {
+			//will play /platform/android/res/raw/soundName
+			soundName = soundName.substring(0, soundName.lastIndexOf('.'));
+			Resources r = getResources();
+			int resourceId = r.getIdentifier(soundName, "raw", context.getPackageName());
+			Uri soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + resourceId);
+			mBuilder.setSound(soundUri);
+		}
+
+		if (extras.getString("bigview") != null) {
+			boolean bigview = Boolean.parseBoolean(extras.getString("bigview"));
+			if (bigview) {
+				mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
+			}
+		}
+
+			// turn on the ligths
+        String ledLight = extras.getString("led");
+        if(ledLight != null) {
+            mBuilder.setLights(Color.argb(0, 255, 0, 0), 500, 500);
+        }
 		
 		int notId = 0;
 		
