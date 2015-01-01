@@ -114,6 +114,19 @@ public class GCMIntentService extends GCMBaseIntentService {
 			mBuilder.setNumber(Integer.parseInt(msgcnt));
 		}
 
+		String vibrationPattern = extras.getString("vibration");
+		if (vibrationPattern != null){
+	        if(vibrationPattern.equals("fast")){
+	        	long[] pattern = {0, 100, 100, 100, 100, 100, 500, 100, 100, 100, 100, 100, 500, 100, 100, 100, 100, 100, 500, 100, 100, 100, 100, 100, 500, 100, 100, 100, 100, 100, 500, 100, 100, 100, 100, 100};
+	        	mBuilder.setVibrate(pattern);
+	        }
+
+	        if(vibrationPattern.equals("slow")){
+	        	long[] pattern = {0, 1000, 500, 1000};
+	        	mBuilder.setVibrate(pattern);
+	        }
+	    }
+
 		String soundName = extras.getString("sound");
 		if (soundName != null) {
 			//will play /platform/android/res/raw/soundName
