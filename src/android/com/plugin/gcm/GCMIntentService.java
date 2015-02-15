@@ -127,6 +127,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 	        }
 	    }
 
+	    String priority = extras.getString("priority");
+	    if (priority != null) {
+	    	mBuilder.setPriority(Integer.parseInt(priority));
+	    }
+
 		String soundName = extras.getString("sound");
 		if (soundName != null) {
 			//will play /platform/android/res/raw/soundName
