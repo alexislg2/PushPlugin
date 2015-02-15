@@ -130,9 +130,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 	    String priority = extras.getString("priority");
 	    if (priority != null) {
 	    	mBuilder.setPriority(Integer.parseInt(priority));
-	    	if (priority == "2") {
-	    		mBuilder.setCategory("alarm");
-	    	}
 	    }
 
 		String soundName = extras.getString("sound");
