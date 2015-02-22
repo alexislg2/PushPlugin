@@ -4,6 +4,9 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.google.android.gcm.GCMRegistrar;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -61,8 +64,11 @@ public class PushPlugin extends CordovaPlugin {
 				gSenderID = (String) jo.get("senderID");
 
 				Log.v(TAG, "execute: ECB=" + gECB + " senderID=" + gSenderID);
-
-				GCMRegistrar.register(getApplicationContext(), gSenderID);
+                
+		                if (isNetworkAvailable()) {
+		                    GCMRegistrar.register(getApplicationContext(), gSenderID);    
+		                }
+				
 				result = true;
 				callbackContext.success();
 			} catch (JSONException e) {
@@ -232,7 +238,14 @@ public class PushPlugin extends CordovaPlugin {
 		}
 		return null;
     }
-
+    
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager 
+              = (ConnectivityManager) cordova.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    
     public static boolean isInForeground()
     {
       return gForeground;
